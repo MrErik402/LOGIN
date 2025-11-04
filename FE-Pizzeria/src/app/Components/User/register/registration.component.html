@@ -1,0 +1,38 @@
+<div class="p3 col-lg-6 offset-lg-3">
+    <h3 class="mb-5 mt-5">Regisztráció</h3>
+
+    <div class="form-floating mb-3">
+        <input type="text" class="form-control" [(ngModel)]="newUser.name" name="newUser.name" id="name" placeholder="name@example.com">
+        <label for="name">Felhasználónév <sup><em>*</em></sup></label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="email" class="form-control" id="email" [(ngModel)]="newUser.email" name="newUser.email" placeholder="name@example.com">
+        <label for="email">E-mail cím <sup><em>*</em></sup></label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="password" [(ngModel)]="newUser.password" name="newUser.password" placeholder="Password">
+        <label for="password">Jelszó <sup><em>*</em></sup></label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="confpassword" [(ngModel)]="newUser.confirm" name="newUser.confirm" placeholder="Password">
+        <label for="confpassword">Jelszó megerősítése <sup><em>*</em></sup></label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="phone" [(ngModel)]="newUser.phone" name="newUser.phone" placeholder="Telefonszám">
+        <label for="phone">Telefonszám</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="address" [(ngModel)]="newUser.address" name="newUser.address" placeholder="Lakhely">
+        <label for="address">Cím:</label>
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="" id="rememberme" [(ngModel)]="acceptTerms" name="acceptTerms">
+        <label class="form-check-label" for="rememberme">
+          Elfogadom a regisztráció szabályzatot <sup><em>*</em></sup>
+        </label>
+      </div>
+    <div class=" d-flex gap-4">
+        <button class="mb-3 btn btn-primary" (click)="register()"><i class="bi bi-person-fill-add"></i> Regisztráció</button>
+        <button class="mb-3 btn btn-secondary" routerLink="/login"><i class="bi bi-door-open-fill"></i> Bejelentkezés</button>
+    </div>
+</div>

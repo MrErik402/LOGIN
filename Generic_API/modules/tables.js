@@ -6,6 +6,57 @@ const SHA1 = require("crypto-js/sha1")
 const passwdRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
 
+//REGISTTRATION
+router.post('/:table/registration',(req,res)=>{
+  let table = req.params.table;
+  let { name, email,password, confirm,phone, address} = req.body;
+  //TODO: VALIDÁCIÓ
+  if(!name || !email || !password || !confirm){
+      res.status(400).send({error:'Hiányzó adatok!'});
+      return;
+  }
+  if(password != confirm){
+      res.status(400).send({error: 'A két jelszó nem egyezik!'});
+      return
+  }
+  if(!password.match(passwdRegExp)){
+      res.status(400).send({error: 'A jelszó nem elég biztonságos'});
+      return
+  }
+
+  query(`SELECT id FROM ${table} WHERE email=?`,[email],(error,results)=>{
+      if(error) return res.status(500).json({error:error.message});
+      if(results.length != 0){
+          res.status(400).send({error: 'A megadott email cím már regisztrálva van'});
+          return
+      }
+     
+      query(`INSERT INTO ${table} (name, email, password,role,phone,address) VALUES (?,?,?,'user',?,?)`, [name,email,SHA1(password).toString(),phone,address], (error, results) =>{
+          if (error) throw res.status(500).json({error:error.message});
+          res.status(200).json(results)
+      }, req);
+
+  },req)
+})
+
+//LOGIN
+router.post('/:table/login',(req,res)=>{
+  let { email, password } = req.body;
+  let table = req.params.table
+  if(!email || !password){
+      res.status(404).send({error:'Hiányzó adatok!'})
+      return;
+  }
+  query(`SELECT * FROM ${table} WHERE email=? AND password = ?`, [email,SHA1(password).toString()], (error, results) =>{
+      if (error) return res.status(500).json({error:error.message});
+      if(results.length == 0){
+          res.status(400).send({error: 'Hibás belépési adatok!'})
+          return;
+      }
+      res.status(200).json(results)
+  }, req);
+})
+
 // Select ALL RECORD FROM TABLE
 router.get("/:table", (req, res) => {
   const table = req.params.table;
@@ -51,25 +102,10 @@ router.get('/:table/:field/:operator/:value', (req,res)=>{
 });
 
 //LOGIN method
-router.post('/:table/login', (req, res) => {
-  const { email, password } = req.body;
-  const table = req.params.table;
 
-  if (!email || !password) {
-    res.status(400).send({ error: 'HIBA! Nem adtál meg minden adatot!' });
-    return;
-  }
-
-  query(`SELECT * FROM ${table} WHERE email = ? AND password = ? `, [email, SHA1(password).toString()], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (res.length == 0) return res.status(400).json({ error: "HIBA! Hibás belépési adatok fijú." })
-    logger.verbose(`[GET /${table}] -> ${results.length} rekord küldve válaszként`)
-    res.status(200).send(results);
-  }, req);
-});
 
 //REGISTER method
-router.post('/:table/registration', (req, res) => {
+/*router.post('/:table/registration', (req, res) => {
   const table = req.params.table;
   const { name, email, password, confirm } = req.body
   if (!name || !email || !password || !confirm) return res.status(400).json({ error: "HIBA! Nem adtál meg minden adatot te fijú!" });
@@ -77,7 +113,7 @@ router.post('/:table/registration', (req, res) => {
   if (!password.match(passwdRegExp)) return res.status(400).json({ error: "HIBA! Az általad megadott jelszó nem elég erős!" });
   query(`SELECT id FROM ${table} where email=?`, [email], (err, res) => {
     if (err) return res.status(500).json({ error: err.message });
-    if (results.length != 0) return res.status(400).json({ error: "HIBA! Az általd választot e-mail cím már foglalt!" });
+    if (res.length != 0) return res.status(400).json({ error: "HIBA! Az általd választot e-mail cím már foglalt!" });
 
     query(`INSERT INTO ${table} (name, email, password, role) VALUES (?,?,?, 'user')`, [name, email, SHA1(password).toString()], (err, results) => {
       if (err) {
@@ -88,7 +124,11 @@ router.post('/:table/registration', (req, res) => {
     }, req);
   }, req)
 
-});
+});*/
+
+
+
+
 
 //ADD NEW record to :table
 router.post('/:table', (req, res) => {

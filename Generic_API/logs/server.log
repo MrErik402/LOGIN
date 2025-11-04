@@ -72,3 +72,74 @@
 [2025-11-03 12:23:54] - [32minfo[39m: server listening on port 3000
 [2025-11-03 12:25:01] - [32minfo[39m: server listening on port 3000
 [2025-11-03 12:26:28] - [32minfo[39m: server listening on port 3000
+[2025-11-04 08:26:00] - [32minfo[39m: server listening on port 3000
+[2025-11-04 10:54:12] - [36mverbose[39m: [POST//users/registration] - 0 record(s) affected. | 7 ms
+[2025-11-04 11:04:17] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:04:36] - [36mverbose[39m: [POST//users/registration] - 0 record(s) affected. | 9 ms
+[2025-11-04 11:05:14] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:05:23] - [36mverbose[39m: [POST//users/registration] - 0 record(s) affected. | 8 ms
+[2025-11-04 11:05:23] - [36mverbose[39m: [POST//users/registration] - 1 record(s) affected. | 4 ms
+[2025-11-04 11:05:56] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:06:28] - [36mverbose[39m: [POST//users/registration] - 0 record(s) affected. | 6 ms
+[2025-11-04 11:06:28] - [36mverbose[39m: [POST//users/registration] - 1 record(s) affected. | 6 ms
+[2025-11-04 11:07:03] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:07:48] - [36mverbose[39m: [POST//users/registration] - 0 record(s) affected. | 7 ms
+[2025-11-04 11:07:48] - [36mverbose[39m: [POST//users/registration] - 1 record(s) affected. | 4 ms
+[2025-11-04 11:08:51] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:08:59] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:09:06] - [36mverbose[39m: [POST//users/registration] - 1 record(s) affected. | 6 ms
+[2025-11-04 11:09:23] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:09:52] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:10:02] - [36mverbose[39m: [POST//users/registration] - 1 record(s) affected. | 7 ms
+[2025-11-04 11:10:22] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:11:05] - [36mverbose[39m: [POST//users/registration] - 0 record(s) affected. | 7 ms
+[2025-11-04 11:11:05] - [36mverbose[39m: [POST//users/registration] - 1 record(s) affected. | 6 ms
+[2025-11-04 11:11:14] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:11:15] - [36mverbose[39m: [POST//users/registration] - 1 record(s) affected. | 6 ms
+[2025-11-04 11:14:24] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:14:32] - [36mverbose[39m: [POST//users/registration] - 1 record(s) affected. | 7 ms
+[2025-11-04 11:14:35] - [36mverbose[39m: [POST//users/registration] - 0 record(s) affected. | 2 ms
+[2025-11-04 11:14:35] - [36mverbose[39m: [POST//users/registration] - 1 record(s) affected. | 4 ms
+[2025-11-04 11:21:22] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:21:42] - [32minfo[39m: server listening on port 3000
+[2025-11-04 11:21:58] - [36mverbose[39m: [POST//users/registration] - 0 record(s) affected. | 6 ms
+[2025-11-04 11:21:58] - [36mverbose[39m: [POST//users/registration] - 1 record(s) affected. | 4 ms
+[2025-11-04 12:10:24] - [36mverbose[39m: [POST//users/login] - 1 record(s) affected. | 2 ms
+[2025-11-04 12:10:24] - [36mverbose[39m: [GET /users] -> 1 rekord küldve válaszként
+[2025-11-04 12:10:50] - [36mverbose[39m: [POST//users/login] - 1 record(s) affected. | 1 ms
+[2025-11-04 12:10:50] - [36mverbose[39m: [GET /users] -> 1 rekord küldve válaszként
+[2025-11-04 12:10:56] - [36mverbose[39m: [POST//users/login] - 1 record(s) affected. | 1 ms
+[2025-11-04 12:10:56] - [36mverbose[39m: [GET /users] -> 1 rekord küldve válaszként
+[2025-11-04 12:11:09] - [36mverbose[39m: [POST//users/login] - 0 record(s) affected. | 1 ms
+[2025-11-04 12:11:09] - [36mverbose[39m: [GET /users] -> 0 rekord küldve válaszként
+[2025-11-04 12:11:50] - [36mverbose[39m: [POST//users/login] - 0 record(s) affected. | 1 ms
+[2025-11-04 12:11:50] - [36mverbose[39m: [GET /users] -> 0 rekord küldve válaszként
+[2025-11-04 12:12:06] - [36mverbose[39m: [POST//users/login] - 1 record(s) affected. | 2 ms
+[2025-11-04 12:12:06] - [36mverbose[39m: [GET /users] -> 1 rekord küldve válaszként
+[2025-11-04 12:12:07] - [36mverbose[39m: [POST//users/login] - 1 record(s) affected. | 1 ms
+[2025-11-04 12:12:07] - [36mverbose[39m: [GET /users] -> 1 rekord küldve válaszként
+[2025-11-04 12:22:03] - [36mverbose[39m: [POST//users/login] - 1 record(s) affected. | 1 ms
+[2025-11-04 12:22:03] - [36mverbose[39m: [GET /users] -> 1 rekord küldve válaszként
+[2025-11-04 12:22:06] - [36mverbose[39m: [POST//users/login] - 0 record(s) affected. | 1 ms
+[2025-11-04 12:22:06] - [36mverbose[39m: [GET /users] -> 0 rekord küldve válaszként
+[2025-11-04 12:22:07] - [36mverbose[39m: [POST//users/login] - 0 record(s) affected. | 1 ms
+[2025-11-04 12:22:07] - [36mverbose[39m: [GET /users] -> 0 rekord küldve válaszként
+[2025-11-04 12:22:08] - [36mverbose[39m: [POST//users/login] - 0 record(s) affected. | 0 ms
+[2025-11-04 12:22:08] - [36mverbose[39m: [GET /users] -> 0 rekord küldve válaszként
+[2025-11-04 12:22:08] - [36mverbose[39m: [POST//users/login] - 0 record(s) affected. | 1 ms
+[2025-11-04 12:22:08] - [36mverbose[39m: [GET /users] -> 0 rekord küldve válaszként
+[2025-11-04 12:22:08] - [36mverbose[39m: [POST//users/login] - 0 record(s) affected. | 1 ms
+[2025-11-04 12:22:08] - [36mverbose[39m: [GET /users] -> 0 rekord küldve válaszként
+[2025-11-04 12:23:55] - [32minfo[39m: server listening on port 3000
+[2025-11-04 12:24:21] - [32minfo[39m: server listening on port 3000
+[2025-11-04 12:26:48] - [36mverbose[39m: [POST//users/login] - 0 record(s) affected. | 8 ms
+[2025-11-04 12:26:48] - [36mverbose[39m: [GET /users] -> 0 rekord küldve válaszként
+[2025-11-04 12:55:19] - [36mverbose[39m: [POST//users/login] - 0 record(s) affected. | 1 ms
+[2025-11-04 12:55:19] - [36mverbose[39m: [GET /users] -> 0 rekord küldve válaszként
+[2025-11-04 12:56:34] - [36mverbose[39m: [POST//users/login] - 0 record(s) affected. | 2 ms
+[2025-11-04 12:56:34] - [36mverbose[39m: [GET /users] -> 0 rekord küldve válaszként
+[2025-11-04 13:20:01] - [32minfo[39m: server listening on port 3000
+[2025-11-04 13:21:28] - [32minfo[39m: server listening on port 3000
+[2025-11-04 13:21:48] - [32minfo[39m: server listening on port 3000
+[2025-11-04 13:22:17] - [32minfo[39m: server listening on port 3000
+[2025-11-04 13:22:19] - [32minfo[39m: server listening on port 3000

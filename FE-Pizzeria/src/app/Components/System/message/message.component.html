@@ -1,0 +1,4 @@
+<div *ngIf="messageMain" class="alert alert-{{messageMain?.severity}} alert-dismissible fade show" role="alert">
+    <strong><i class="bi {{messageMain?.icon}}"></i>  {{messageMain?.title}}</strong> - {{messageMain?.message}}
+    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+</div>
