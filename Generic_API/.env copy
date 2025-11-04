@@ -1,0 +1,8 @@
+DBHOST = 127.0.0.1
+DBUSER = root
+DBPASS = 
+DBNAME= 2025_katicabufe
+
+PORT = 3000
+
+DEBUG_MODE=1

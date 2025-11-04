@@ -1,0 +1,48 @@
+@url = http://localhost:3000
+
+### GET ALL users
+GET {{url}}/kategoria
+Content-Type: application/json
+
+### GET one users by id
+GET {{url}}/kategoria/3
+Content-Type: application/json
+
+### POST one kategoria
+POST {{url}}/kategoria
+Content-Type: application/json
+
+{
+    "kategoriaNev":"Édességek1"
+}
+
+### UPDATE record by id
+
+PATCH {{url}}/kategoria/16
+Content-Type: application/json
+
+{
+    "kategoriaNev":"Fityanás"
+}
+
+### LOGIN
+
+POST {{url}}/users/login
+Content-Type: application/json
+
+{
+    "email": "Fityfirity",
+    "password": "Ab123456"
+}
+
+### Registráció
+
+POST  {{url}}/users/registration
+Content-Type: application/json
+
+{
+    "name": "Fityanó János",
+    "email": "Fityfirity",
+    "password": "Ab123456",
+    "confirm": "Ab123456"
+}

@@ -1,0 +1,4 @@
+[2025-10-22 12:06:32] - [31merror[39m: [DATABASE ERROR] -> ER_NO_SUCH_TABLE: Table '2025_katicabufe.users' doesn't exist
+[2025-10-22 12:06:45] - [31merror[39m: [DATABASE ERROR] -> ER_NO_SUCH_TABLE: Table '2025_katicabufe.users' doesn't exist
+[2025-10-22 12:06:46] - [31merror[39m: [DATABASE ERROR] -> ER_NO_SUCH_TABLE: Table '2025_katicabufe.users' doesn't exist
+[2025-11-03 11:10:18] - [31merror[39m: [DATABASE ERROR] -> ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ' -294446298, 236050790, 1801662194, -1178700058, `sigBytes` = 20, `$super` = ...' at line 1

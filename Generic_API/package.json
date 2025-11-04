@@ -1,0 +1,23 @@
+{
+  "name": "generic_api",
+  "version": "1.0.0",
+  "description": "Generic API for all Frontend app",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server",
+    "start": "node server"
+  },
+  "author": "BEA",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mysql": "^2.18.1",
+    "winston": "^3.18.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
