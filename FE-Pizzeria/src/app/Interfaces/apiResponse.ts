@@ -1,5 +1,5 @@
-export interface apiResponse{
-    status: number;
-    message?: string;
-    data?: any;
+export interface ApiResponse {
+  status: number;
+  message?: string;
+  data?: any;
 }

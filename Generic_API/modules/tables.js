@@ -1,208 +1,166 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { query } = require("../utils/database");
-const logger = require("../utils/logger")
-const SHA1 = require("crypto-js/sha1")
+const { query } = require('../utils/database');
+const logger = require('../utils/logger');
+var SHA1 = require("crypto-js/sha1");
+const { error } = require('winston');
 const passwdRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
-
-//REGISTTRATION
-router.post('/:table/registration',(req,res)=>{
-  let table = req.params.table;
-  let { name, email,password, confirm,phone, address} = req.body;
-  //TODO: VALIDÁCIÓ
-  if(!name || !email || !password || !confirm){
-      res.status(400).send({error:'Hiányzó adatok!'});
-      return;
-  }
-  if(password != confirm){
-      res.status(400).send({error: 'A két jelszó nem egyezik!'});
-      return
-  }
-  if(!password.match(passwdRegExp)){
-      res.status(400).send({error: 'A jelszó nem elég biztonságos'});
-      return
-  }
-
-  query(`SELECT id FROM ${table} WHERE email=?`,[email],(error,results)=>{
-      if(error) return res.status(500).json({error:error.message});
-      if(results.length != 0){
-          res.status(400).send({error: 'A megadott email cím már regisztrálva van'});
-          return
-      }
-     
-      query(`INSERT INTO ${table} (name, email, password,role,phone,address) VALUES (?,?,?,'user',?,?)`, [name,email,SHA1(password).toString(),phone,address], (error, results) =>{
-          if (error) throw res.status(500).json({error:error.message});
-          res.status(200).json(results)
-      }, req);
-
-  },req)
-})
-
-//LOGIN
-router.post('/:table/login',(req,res)=>{
-  let { email, password } = req.body;
-  let table = req.params.table
-  if(!email || !password){
-      res.status(404).send({error:'Hiányzó adatok!'})
-      return;
-  }
-  query(`SELECT * FROM ${table} WHERE email=? AND password = ?`, [email,SHA1(password).toString()], (error, results) =>{
-      if (error) return res.status(500).json({error:error.message});
-      if(results.length == 0){
-          res.status(400).send({error: 'Hibás belépési adatok!'})
-          return;
-      }
-      res.status(200).json(results)
-  }, req);
-})
-
-// Select ALL RECORD FROM TABLE
-router.get("/:table", (req, res) => {
-  const table = req.params.table;
-  query(`SELECT * FROM ${table}`, [], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    logger.verbose(`[GET /${table}] -> ${results.length} rekord küldve válaszként`)
-    res.status(200).send(results);
-  }, req);
-});
-
-//SELECT ONE RECORD BY ID FROM TALBE
-router.get("/:table/:id", (req, res) => {
-  const table = req.params.table;
-  const id = req.params.id;
-  query(`SELECT * FROM ${table} WHERE id = ?`, [id], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    logger.verbose(`[GET /${table}] -> ${results.length} rekord küldve válaszként`)
-    res.status(200).send(results);
-  }, req);
-});
-
-//SELECT records FROM :table by :field
-router.get('/:table/:field/:operator/:value', (req,res)=>{
-  const table = req.params.table;
-  const field = req.params.field;
-  const operator = getOp(req.params.operator);
-  const value = req.params.value
-
-  if(req.params.op == "lk"){
-    value = `%${value}%`
-  }
-  query(`SELECT * FROM ${table} WHERE ${field}${operator}?`, [value], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    logger.verbose(`[GET /${table}] -> ${results.length} rekord küldve válaszként`)
-    res.status(200).send(results);
-  }, req);
-});
-
-//LOGIN method
-
-
-//REGISTER method
-/*router.post('/:table/registration', (req, res) => {
-  const table = req.params.table;
-  const { name, email, password, confirm } = req.body
-  if (!name || !email || !password || !confirm) return res.status(400).json({ error: "HIBA! Nem adtál meg minden adatot te fijú!" });
-  if (password != confirm) return res.status(400).json({ error: "HIBA! Nem egyezik az általad megadott két jelszó!" });
-  if (!password.match(passwdRegExp)) return res.status(400).json({ error: "HIBA! Az általad megadott jelszó nem elég erős!" });
-  query(`SELECT id FROM ${table} where email=?`, [email], (err, res) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (res.length != 0) return res.status(400).json({ error: "HIBA! Az általd választot e-mail cím már foglalt!" });
-
-    query(`INSERT INTO ${table} (name, email, password, role) VALUES (?,?,?, 'user')`, [name, email, SHA1(password).toString()], (err, results) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
-      }
-      logger.verbose(`[POST /${table}] -> ${results.length} rekord feltöltésre került.`)
-      res.status(200).send(results);
+// SELECT ALL records fron :table
+router.get('/:table', (req, res) => {
+    const table = req.params.table;
+    query(`SELECT * FROM ${table}`, [], (error, results) => {
+        if (error) return res.status(500).json({ error: error.message });
+        res.status(200).json(results);
     }, req);
-  }, req)
+});
 
-});*/
+// SELECT ONE record from :table by :id
+router.get('/:table/:id', (req, res) => {
+    const table = req.params.table;
+    const id = req.params.id;
+    query(`SELECT * FROM ${table} WHERE id=?`, [id], (error, results) => {
+        if (error) return res.status(500).json({ error: error.message });
+        res.status(200).json(results);
+    }, req);
+});
 
+// SELECT records FROM :table by :field
+router.get('/:table/:field/:op/:value', (req, res) => {
+    let table = req.params.table;
+    let field = req.params.field;
+    let op = getOp(req.params.op);
+    let value = req.params.value;
 
+    if (req.params.op == 'lk'){
+        value = `%${value}%`;
+    }
 
+    query(`SELECT * FROM ${table} WHERE ${field}${op}?`, [value], (error, results) => {
+        if (error) return res.status(500).json({ error: error.message });
+        res.status(200).json(results);
+    }, req);
 
+});
 
-//ADD NEW record to :table
+// LOGIN
+router.post('/:table/login', (req, res) => {
+    let { email, password } = req.body;
+    let table = req.params.table;
+
+    if (!email || !password){
+        res.status(400).send( { error: 'Hiányzó adatok!' });
+        return;
+    }
+
+    query(`SELECT * FROM ${table} WHERE email=? AND password=?`, [email, SHA1(password).toString()], (error, results) => {
+        if (error) return res.status(500).json({ error: error.message });
+        if (results.length == 0){
+            res.status(400).send({ error: 'Hibás belépési adatok!' });
+            return;
+        }
+        res.status(200).json(results);
+    }, req);
+
+});
+
+// Registation
+router.post('/:table/registration', (req, res) => {
+    let table = req.params.table;
+    let { name, email, password, confirm, phone, address } = req.body;
+
+    if (!name || !email || !password || !confirm){
+        res.status(400).send({ error: 'Hiányzó adatok!' });
+        return;
+    }
+
+    if ( password != confirm){
+        res.status(400).send({ error: 'A megadott jelszavak nem egeznek!' });
+        return;
+    }
+
+    if (!password.match(passwdRegExp)){
+        res.status(400).send({ error: 'A megadott jelszó nem elég biztonságos!' });
+        return;
+    }
+
+    query(`SELECT id FROM ${table} WHERE email=?`, [email], (error, results)=>{
+        if (error) return res.status(500).json({ error: error.message });
+
+        if (results.length != 0){
+            res.status(400).send({ error: 'A megadott e-mail cím már regisztrálva van!' });
+            return;
+        }
+
+        query(`INSERT INTO ${table} (name, email, password, role, phone, address) VALUES(?,?,?,'user',?,?)`, [name, email, SHA1(password).toString(), phone, address], (error, results) => {
+            if (error) return res.status(500).json({ error: error.message });
+            res.status(200).json(results);
+        }, req);
+
+    }, req);
+
+});
+
+// ADD NEW record to :table
 router.post('/:table', (req, res) => {
-  const table = req.params.table;
-  const fields = Object.keys(req.body).join(',');
-  const values = '"' + Object.values(req.body).join('", "') + '"'
-  query(`INSERT INTO ${table} (${fields}) VALUES (${values})`, [], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    logger.verbose(`[POST /${table}] -> ${results.length} rekord feltöltésre került.`)
-    res.status(200).send(results);
-  }, req);
+    let table = req.params.table;
+    let fields = Object.keys(req.body).join(',');
+    let values = "'" + Object.values(req.body).join("', '") + "'";
+    query(`INSERT INTO ${table} (${fields}) VALUES(${values})`, [], (error, results) => {
+        if (error) return res.status(500).json({ error: error.message });
+        res.status(200).json(results);
+    }, req);
 });
 
-//UPDATE records in :table by :id
-
+// UPDATE records in :table by :id
 router.patch('/:table/:id', (req, res) => {
-  const table = req.params.table;
-  const id = req.params.id;
-  const fields = Object.keys(req.body);
-  const values = Object.values(req.body);
-  let updates = [];
-  for (let i = 0; i < fields.length; i++) {
-    updates.push(`${fields[i]}='${values[i]}'`)
-  }
-  let str = updates.join(',')
-  query(`UPDATE ${table} SET ${str}  WHERE id=?`, [id], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
+    let table = req.params.table;
+    let id = req.params.id;
+    let fields = Object.keys(req.body);
+    let values = Object.values(req.body);
+    let updates = [];
+    for(let i=0; i< fields.length; i++){
+        updates.push(`${fields[i]}='${values[i]}'`);
     }
-    logger.verbose(`[POST /${table}] -> ${results.length} rekord feltöltésre került.`)
-    res.status(200).send(results);
-  }, req);
-})
-
-//DELETE ONE RECORD BY ID FROM TALBE
-router.delete("/:table/:id", (req, res) => {
-  const table = req.params.table;
-  const id = req.params.id;
-  query(`DELETE FROM ${table} WHERE id = ?`, [id], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    logger.verbose(`[DELETE /${table}] -> ${results.length} rekord küldve válaszként`)
-    res.status(200).send(results);
-  }, req);
+    let str = updates.join(',');
+    query(`UPDATE ${table} SET ${str} WHERE id=?`, [id], (error, results) => {
+        if (error) return res.status(500).json({ error: error.message });
+        res.status(200).json(results);
+    }, req);
 });
 
-//DELETE ALL RECORDS
-router.delete("/:table/", (req, res) => {
-  const table = req.params.table;
-  query(`DELETE FROM ${table}`, [id], (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    logger.verbose(`[DELETE /${table}] -> ${results.length} rekord küldve válaszként`)
-    res.status(200).send(results);
-  }, req);
+// DELETE ONE record fron :table by :id
+router.delete('/:table/:id', (req, res) => {
+    const table = req.params.table;
+    const id = req.params.id;
+    query(`DELETE FROM ${table} WHERE id=?`, [id], (error, results) => {
+        if (error) return res.status(500).json({ error: error.message });
+        res.status(200).json(results);
+    }, req);
 });
-module.exports = router;
+
+// DELETE ALL record fron :table 
+router.delete('/:table', (req, res) => {
+    const table = req.params.table;
+    query(`DELETE FROM ${table}`, [], (error, results) => {
+        if (error) return res.status(500).json({ error: error.message });
+        res.status(200).json(results);
+    }, req);
+});
 
 function getOp(op){
-  switch(op){
-    case 'eq':    {op = ' = '; break;}
-    case 'lt':    {op = ' < '; break;}
-    case 'lte':   {op = ' <= '; break;}
-    case 'gt':    {op = ' > '; break;}
-    case 'gte':   {op = ' >= '; break;}
-    case 'not':   {op = ' <> '; break;}
-    case 'lk':    {op = ' LIKE '; break;}
-  }
+    switch(op){
+        case 'eq':  { op = '='; break; }
+        case 'lt':  { op = '<'; break; }
+        case 'lte': { op = '<='; break; }
+        case 'gt':  { op = '>'; break; }
+        case 'gte': { op = '>='; break; }
+        case 'not': { op = '<>'; break; }
+        case 'lk':  { op = ' like '; break; }       
+    }
+    return op;
 }
 
-/*
-http://localhost:3000/user
-*/
+module.exports = router;
+
+

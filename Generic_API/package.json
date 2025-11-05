@@ -1,8 +1,8 @@
 {
   "name": "generic_api",
   "version": "1.0.0",
-  "description": "Generic API for all Frontend app",
-  "main": "server.js",
+  "description": "Általános NodeJS backend API",
+  "main": "server",
   "scripts": {
     "dev": "nodemon server",
     "start": "node server"

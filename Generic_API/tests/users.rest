@@ -1,48 +1,73 @@
-@url = http://localhost:3000
+@host = http://localhost
+@port = 3333
+@url = {{host}}:{{port}}
 
-### GET ALL users
+### GET all records from :table
+
 GET {{url}}/kategoria
 Content-Type: application/json
 
-### GET one users by id
-GET {{url}}/kategoria/3
+### GET one records from :table by :id
+
+GET {{url}}/kategoria/2
 Content-Type: application/json
 
-### POST one kategoria
+### POST new record to :table
+
 POST {{url}}/kategoria
 Content-Type: application/json
 
 {
-    "kategoriaNev":"Édességek1"
+    "categoryName": "Édességek"
 }
 
-### UPDATE record by id
+### POST new record to :table
 
-PATCH {{url}}/kategoria/16
+POST {{url}}/termekek
 Content-Type: application/json
 
 {
-    "kategoriaNev":"Fityanás"
+    "name": "Boci csoki",
+    "catId": 23, 	
+    "unit": "db", 	
+    "price": 515 	
 }
 
-### LOGIN
+### UPDATE record from :table by :id
+
+PATCH {{url}}/kategoria/23
+Content-Type: application/json
+
+{
+    "categoryName": "xxxxxxxxxx"
+}
+
+
+### login
 
 POST {{url}}/users/login
 Content-Type: application/json
 
 {
-    "email": "Fityfirity",
-    "password": "Ab123456"
+    "email": "teszt@gmail.com",
+    "password": "123456"
 }
 
-### Registráció
+
+### regisztartion
 
 POST  {{url}}/users/registration
 Content-Type: application/json
 
 {
-    "name": "Fityanó János",
-    "email": "Fityfirity",
-    "password": "Ab123456",
-    "confirm": "Ab123456"
+    "name": "Sanyi",
+    "email": "sanyi@gamil.com",
+    "password": "Titkos123456",
+    "confirm": "Titkos123456"
 }
+
+
+### 
+
+GET {{url}}/users/id/lte/3
+Content-Type: application/json

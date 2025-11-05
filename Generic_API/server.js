@@ -1,17 +1,18 @@
-const express = require("express");
-const cors = require("cors");
+const express = require('express');
+var cors = require('cors');
 
-const tables = require("./modules/tables");
-const logger  = require("./utils/logger");
+const tables = require('./modules/tables');
+
+const logger = require('./utils/logger');
 const app = express();
 
-// Middlewarek
+// Middleware-ek
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })) // req.body-n keresztül átmenjen az adat
+app.use(express.urlencoded({ extended: true }));
 
-app.use("/", tables);
+app.use('/', tables);
 
-app.listen(3000, () => {
-   logger.log('info', 'server listening on port 3000')
+app.listen(process.env.PORT, () => {
+    logger.info(`Server listening on http://localhost:${process.env.PORT}`);
 });

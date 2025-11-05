@@ -1,0 +1,99 @@
+<h3>Pizzák kezelése</h3>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#formModal">
+    <i class="bi bi-plus-circle-fill"></i> Új pizza hozzáadása
+</button>
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Kép</th>
+            <th>Megnevezés</th>
+            <th>Leírás</th>
+            <th class="text-end">Kalória</th>
+            <th class="text-end">Ár</th>
+            <th class="text-end">Műveletek</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let pizza of pizzas; let i = index">
+            <td>{{i+1}}.</td>
+            <td>{{pizza.image}}</td>
+            <td>{{pizza.name}}</td>
+            <td>{{pizza.description}}</td>
+            <td class="text-end">{{pizza.calory}} kcal</td>
+            <td class="text-end">{{pizza.price}} {{currency}}</td>
+            <td class="text-end">
+                <button class="btn btn-warning btn-sm me-2" title="Módosítás"><i class="bi bi-pencil-fill"></i></button>
+                <button class="btn btn-danger btn-sm" title="Törlés" data-bs-toggle="modal" data-bs-target="#confirmModal"><i class="bi bi-trash3-fill"></i></button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td class="text-center" colspan="7">Összesen <strong class="text-info">0</strong> pizza található az
+                adatbázisban!</td>
+        </tr>
+    </tfoot>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</table>
+
+<!-- Form Modal -->
+<div class="modal fade" id="formModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="formModalLabel"><i class="bi bi-plus-circle-fill"></i> Pizza
+                    hozzáadása</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Mégsem</button>
+                <button type="button" class="btn btn-primary"><i class="bi bi-floppy-fill"></i> Hozzáadása</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal fade" id="confirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="confirmModalLabel">Veszélyes művelet</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Biztonsan törölni szeretnéd ezt a pizzát?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Nem</button>
+                <button type="button" class="btn btn-danger"><i class="bi bi-check-lg"></i> Igen</button>
+            </div>
+        </div>
+    </div>
+</div>

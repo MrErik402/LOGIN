@@ -1,36 +1,53 @@
 import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { ApiService } from '../../../Services/api.service';
-import { MessageService } from '../../../Services/message.service';
+import { Router, RouterModule } from "@angular/router";
+import { ApiService } from '../../../services/api.service';
+import { MessageService } from '../../../services/message.service';
+import { User } from '../../../interfaces/user';
 import { FormsModule } from '@angular/forms';
-import { User } from '../../../Interfaces/User';
-import { AuthService } from '../../../Services/auth.service';
-
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterModule, FormsModule],
+  imports: [
+    RouterModule,
+    FormsModule
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
+
 export class LoginComponent {
-  constructor(private api:ApiService, private message: MessageService, private router: Router, private auth: AuthService){}
-  user:User = {
+
+  user: User = {
     name: '',
     email: '',
     password: '',
     role: ''
   }
+  rememberMe: boolean = false;
+
+  constructor(
+    private api: ApiService,
+    private auth: AuthService,
+    private message: MessageService,
+    private router: Router,
+  ){}
+
   login(){
-    this.api.login('users', this.user).then(res =>{
-      if(res.status == 500){
-        this.message.show('warning', 'FIGYELMEZTETÉS!', res.message)
-        return
-      }else{
-        this.message.show('success', 'OK!', res.message)
-        this.auth.login(JSON.stringify(res.data))
+    this.api.login('users', this.user).then(res => {
+      if (res.status == 500){
+        this.message.show('danger', 'Hiba', res.message);
+        return;
       }
-    })
+      //Maradjon bejelentkezve vagy sem
+      if(this.rememberMe){
+        this.auth.storeUser(JSON.stringify(res.data));
+      }
+
+      this.auth.login(JSON.stringify(res.data));
+      this.router.navigate(['/pizzalist'])
+    });
   }
+
 }

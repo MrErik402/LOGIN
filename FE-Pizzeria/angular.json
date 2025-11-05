@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "FE-Pizzeria": {
+    "Pizzeria": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/fe-pizzeria",
+            "outputPath": "dist/pizzeria",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -26,14 +26,12 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.min.css",
               "src/styles.scss"
             ],
             "scripts": [
@@ -45,13 +43,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ],
               "outputHashing": "all"
@@ -68,16 +66,19 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "FE-Pizzeria:build:production"
+              "buildTarget": "Pizzeria:build:production"
             },
             "development": {
-              "buildTarget": "FE-Pizzeria:build:development"
+              "buildTarget": "Pizzeria:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "Pizzeria:build"
+          }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
@@ -89,11 +90,8 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              },
-              "src/assests"
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss"
@@ -105,6 +103,6 @@
     }
   },
   "cli": {
-    "analytics": "a4033860-4e40-4b3e-a96c-74bbc5f894b3"
+    "analytics": "45f04856-395e-4320-8a99-3729b4d1d562"
   }
 }

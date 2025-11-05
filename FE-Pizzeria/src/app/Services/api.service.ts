@@ -1,157 +1,153 @@
 import { Injectable } from '@angular/core';
-import axios from "axios"
-import { apiResponse } from '../Interfaces/apiResponse';
-import { enviroment } from '../../environments/enviroment';
+import axios from 'axios';
+import { environment } from '../../environments/environment';
+import { ApiResponse } from '../interfaces/apiresponse';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ApiService {
-  SERVER = enviroment.serverURL
+
+  SERVER = environment.serverUrl;
+
   constructor() { }
 
-
-
-  //POST NEW RECORD TO 'table'
-  async registration(tableName: string, data:any){
-    try {
-      const response = await axios.post(`${this.SERVER}/${tableName}/registration`, data)
+  async registration(table: string, data: any){
+    try{
+      const response = await axios.post(`${this.SERVER}/${table}/registration`, data);
       return {
         status: 200,
-        message: "A regisztráció sikeresen megtörtént! Most már bejelentkezhetsz!",
-        data: response.data //Nem kötelező vsszaküldeni.
-      }
-    } catch (err: any) {
-      return{
+        message: 'A regisztráció sikeres! Most már beléphetsz!',
+        data: response.data   // nem kötelező visszaköldeni
+      };
+    }catch(err: any){
+      return {
         status: 500,
         message: err.response.data.error
-      }
+      };
+    }
+  }
+
+  async login(table: string, data: any){
+    try{
+      const response = await axios.post(`${this.SERVER}/${table}/login`, data);
+      return {
+        status: 200,
+        message: 'Sikeres belépés!',
+        data: response.data   // nem kötelező visszaköldeni
+      };
+    }catch(err: any){
+      return {
+        status: 500,
+        message: err.response.data.error
+      };
     }
   }
 
 
-  
-  //POST NEW RECORD TO 'table'
-  async login(tableName: string, data:any){
-    try {
-      const response = await axios.post(`${this.SERVER}/${tableName}/login`, data)
-      return {
-        status: 200,
-        message: "Bejelentkeztél",
-        data: response.data //Nem kötelező vsszaküldeni.
-      }
-    } catch (err: any) {
-      return{
-        status: 500,
-        message: err.response.data.error
-      }
-    }
-  }
+  // GET ALL record from 'table'  -> GET http://localhost:3000/users
 
-
-
-  //GET ALL RECORD FROM 'table'
-  async selectAll(tableName: string):Promise<apiResponse>{
-    try {
-      const response = await axios.get(`${this.SERVER}/${tableName}`)
-      console.log(response)
+  async selectAll(table: string):Promise<ApiResponse>{
+    try{
+      const response = await axios.get(`${this.SERVER}/${table}`);
       return {
         status: 200,
         data: response.data
-      }
-    } catch (error: any) {
-      console.log(error.message);
-      return{
+      };
+    }catch(error: any){
+      return {
         status: 500,
-        message: "Valami hiba történt az adatok lekérdésekor"
-      }
+        message: 'Hiba történt az adatok elérésekor!'
+      };
     }
   }
 
-  //GET ONE RECORD FROM 'table' BY 'id'
-  async select(tableName: string, id: number):Promise<apiResponse>{
-    try {
-      const response = await axios.get(`${this.SERVER}/${tableName}/${id}`)
+  // GET ONE record from 'table' by 'id'  -> GET http://localhost:3000/users/5
+
+  async select(table: string, id: number):Promise<ApiResponse>{
+    try{
+      const response = await axios.get(`${this.SERVER}/${table}/${id}`);
       return {
         status: 200,
         data: response.data
-      }
-    } catch (error: any) {
-      console.log(error.message);
-      return{
+      };
+    }catch(error: any){
+      return {
         status: 500,
-        message: "Valami hiba történt az adatok lekérdésekor"
-      }
+        message: 'Hiba történt az adatok elérésekor!'
+      };
     }
-
   }
 
-  //POST NEW RECORD TO 'table'
-  async insert(tableName: string, data:any){
-    try {
-      const response = await axios.post(`${this.SERVER}/${tableName}/`, data)
+  // POST new record to 'table'  -> POST http://localhost:3000/users
+
+  async insert(table: string, data: any){
+    try{
+      const response = await axios.post(`${this.SERVER}/${table}`, data);
       return {
         status: 200,
-        message: "a rekord sikeresen felvéve!",
-        data: response.data //Nem kötelező vsszaküldeni.
-      }
-    } catch (error: any) {
-      console.log(error.message);
-      return{
+        message: 'A rekord felvéve!',
+        data: response.data   // nem kötelező visszaköldeni
+      };
+    }catch(error: any){
+      return {
         status: 500,
-        message: "Valami hiba történt az adatok módosításakor"
-      }
+        message: 'Hiba történt a művelet során!'
+      };
     }
   }
 
-  //UPDATE RECORD FROM 'table' by 'id' 
-  async update(tableName: string, id:number, data:any){
-    try {
-      const response = await axios.patch(`${this.SERVER}/${tableName}/${id}`, data)
+  // UPDATE record from 'table' by 'id'  -> PATCH http://localhost:3000/users/5
+
+  async update(table:string, id: number, data:any){
+    try{
+      const response = await axios.patch(`${this.SERVER}/${table}/${id}`, data);
       return {
         status: 200,
-        message: "a rekord módosítva!",
-        data: response.data //Nem kötelező vsszaküldeni.
-      }
-    } catch (error: any) {
-      console.log(error.message);
-      return{
+        message: 'A rekord módosítva!',
+        data: response.data   // nem kötelező visszaköldeni
+      };
+    }catch(error: any){
+      return {
         status: 500,
-        message: "Valami hiba történt a művelet során"
-      }
+        message: 'Hiba történt a művelet során!'
+      };
     }
   }
 
-  // DELETE ONE RECORD FROM 'table' by 'id'
-  async delete(tableName:string, id:number){
-    try {
-      const response = await axios.delete(`${this.SERVER}/${tableName}/${id}`)
+  // DELETE ONE record from 'table' by 'id'  -> DELETE http://localhost:3000/users/5
+
+  async delete(table:string, id: number){
+    try{
+      const response = await axios.delete(`${this.SERVER}/${table}/${id}`);
       return {
         status: 200,
-        message: "Sikeresen törölted a rekordot a táblából!"
-      }
-    } catch (error: any) {
-      console.log(error.message);
-      return{
+        message: 'A rekord törölve a táblából!'
+      };
+    }catch(error: any){
+      return {
         status: 500,
-        message: "Valami hiba történt az adatok lekérdésekor"
-      }
+        message: 'Hiba történt a művelet során!'
+      };
     }
   }
 
-  //DELETE ALL record from 'table'
-  async deleteAll(tableName:string){
-  try {
-    const response = await axios.delete(`${this.SERVER}/${tableName}`)
-    return {
-      status: 200,
-      message: "Összes rekord törölve a táblából!"
+  // DELETE ALL!!! record from 'table'  -> DELETE http://localhost:3000/users
+
+  async deleteAll(table: string){
+    try{
+      const response = await axios.delete(`${this.SERVER}/${table}`);
+      return {
+        status: 200,
+        message: 'Összes rekord törölve a táblából!'
+      };
+    }catch(error: any){
+      return {
+        status: 500,
+        message: 'Hiba történt a művelet során!'
+      };
     }
-  } catch (error: any) {
-    console.log(error.message);
-    return{
-      status: 500,
-      message: "Valami hiba történt az adatok lekérdésekor"
-    }
-  }}
+  }
+
 }

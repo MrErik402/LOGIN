@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { ApiService } from '../../../Services/api.service';
-
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-profile',
@@ -9,7 +8,13 @@ import { ApiService } from '../../../Services/api.service';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
+
 export class ProfileComponent {
-  constructor(private api:ApiService){}
- save(){}
+
+  constructor(
+    private api: ApiService
+  ) { }
+
+  save() { }
+
 }

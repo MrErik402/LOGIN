@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { ApiService } from '../../../Services/api.service';
-import { User } from '../../../Interfaces/User';
+import { ApiService } from '../../../services/api.service';
+import { User } from '../../../interfaces/user';
 import {FormsModule} from '@angular/forms'
-import { MessageService } from '../../../Services/message.service';
+import { MessageService } from '../../../services/message.service';
 
 
 @Component({

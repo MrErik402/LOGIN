@@ -1,6 +1,6 @@
-export interface NavItem{
-    name: string;
-    url: string;
-    icon?: string;
-
+export interface NavItem {
+  name: string;
+  url: string;
+  icon?: string;
+  badge?: number;
 }

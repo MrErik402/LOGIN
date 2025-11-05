@@ -1,45 +1,75 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { enviroment } from '../../environments/enviroment';
+import { BehaviorSubject, retry } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthService {
-   
-  private tokenName = enviroment.tokenName;
+
+  private tokenName = environment.tokenName;
+
   private isLoggedIn = new BehaviorSubject<boolean>(this.hasToken());
   isLoggedIn$ = this.isLoggedIn.asObservable();
+
   constructor() { }
 
   hasToken():boolean{
-    if(sessionStorage.getItem(this.tokenName)){
-      return true;
+    const session = sessionStorage.getItem(this.tokenName);
+    if(session) return true;
+
+    const local = localStorage.getItem(this.tokenName);
+    if(local){
+      sessionStorage.setItem(this.tokenName, local)
+      return true
     }
-    return false;
+    return false
+
   }
 
   login(token:string){
-    sessionStorage.setItem(this.tokenName, token)
-    this.isLoggedIn.next(true)
-
+    sessionStorage.setItem(this.tokenName, token);
+    this.isLoggedIn.next(true);
   }
+
   logout(){
     sessionStorage.removeItem(this.tokenName);
-    this.isLoggedIn.next(false)
+    localStorage.removeItem(this.tokenName);
+    this.isLoggedIn.next(false);
   }
-  loggedUser(){ //A bejelentkezett felhasználó adatai
-    const token = sessionStorage.getItem(this.tokenName)
-    if(token){
-      return JSON.parse(token)
+
+  storeUser(token:string){
+    localStorage.setItem(this.tokenName, token);
+  }
+
+  loggedUser(){
+    const token = sessionStorage.getItem(this.tokenName);
+
+    if (token){
+      return JSON.parse(token);
     }
-    return null
+
+    return null;
   }
-  isAdmin():boolean{ //Admin-e a felhasználó
+
+  isAdmin():boolean{
     const user = this.loggedUser();
-    return user.role === 'admin'
+    if(user) return user[0].role === 'admin';
+    return false;
   }
-  isLoggedUser():boolean{ //Bárki be van-e jelentkezve
-    return this.isLoggedIn.value
+
+  isLoggedUser():boolean {
+    return this.isLoggedIn.value;
   }
+
 }
+
+/* 
+- bejelentkezés
+- kijelentkezés
+- regisztráció
+- emlékezz rám
+- admin-e
+
+*/
