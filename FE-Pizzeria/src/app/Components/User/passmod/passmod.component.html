@@ -3,20 +3,45 @@
   <h3 class="mb-3">Update password</h3>
 
   <div class="form-floating mb-3">
-    <input type="password" class="form-control" id="oldpass" placeholder="Old password">
+    <input type="password"
+           class="form-control"
+           id="oldpass"
+           name="oldpass"
+           placeholder="Old password"
+           [(ngModel)]="form.current">
     <label for="oldpass">Old password:</label>
   </div>
 
   <div class="form-floating mb-3">
-    <input type="password" class="form-control" id="newpass" placeholder="New password">
+    <input type="password"
+           class="form-control"
+           id="newpass"
+           name="newpass"
+           placeholder="New password"
+           [(ngModel)]="form.next">
     <label for="newpass">New password:</label>
   </div>
 
   <div class="form-floating mb-3">
-    <input type="password" class="form-control" id="confirmpass" placeholder="Confirm new password">
+    <input type="password"
+           class="form-control"
+           id="confirmpass"
+           name="confirmpass"
+           placeholder="Confirm new password"
+           [(ngModel)]="form.confirm">
     <label for="confirmpass">Confirm new password:</label>
   </div>
 
-  <button class="mb-3 btn btn-primary" (click)="save()"><i class="bi bi-arrow-repeat"></i>&nbsp;&nbsp;Update password</button>
+  <small class="text-muted d-block mb-3">
+    Minimum 8 karakter, kis- és nagybetű, valamint szám kötelező.
+  </small>
+
+  <button class="mb-3 btn btn-primary"
+          type="button"
+          [disabled]="isSaving"
+          (click)="save()">
+    <i class="bi" [ngClass]="isSaving ? 'bi-hourglass-split' : 'bi-arrow-repeat'"></i>&nbsp;&nbsp;
+    {{ isSaving ? 'Updating...' : 'Update password' }}
+  </button>
 
 </div>

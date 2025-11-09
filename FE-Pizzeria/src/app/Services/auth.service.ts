@@ -63,6 +63,15 @@ export class AuthService {
     return this.isLoggedIn.value;
   }
 
+  refreshUserSession(data: any){
+    const serialized = typeof data === 'string' ? data : JSON.stringify(data);
+    sessionStorage.setItem(this.tokenName, serialized);
+    if(localStorage.getItem(this.tokenName)){
+      localStorage.setItem(this.tokenName, serialized);
+    }
+    this.isLoggedIn.next(true);
+  }
+
 }
 
 /* 
