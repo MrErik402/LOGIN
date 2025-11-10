@@ -18,16 +18,18 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let pizza of pizzas; let i = index">
+        <tr *ngFor="let pizza of pagedPizza; let i = index">
             <td>{{i+1}}.</td>
             <td>{{pizza.image}}</td>
             <td>{{pizza.name}}</td>
             <td>{{pizza.description}}</td>
-            <td class="text-end">{{pizza.calory}} kcal</td>
-            <td class="text-end">{{pizza.price}} {{currency}}</td>
+            <td class="text-end">{{pizza.calory | numberFormat}} kcal</td>
+            <td class="text-end">{{pizza.price | numberFormat }} {{currency}}</td>
             <td class="text-end">
-                <button class="btn btn-warning btn-sm me-2" title="Módosítás"><i class="bi bi-pencil-fill"></i></button>
-                <button class="btn btn-danger btn-sm" title="Törlés" data-bs-toggle="modal" data-bs-target="#confirmModal"><i class="bi bi-trash3-fill"></i></button>
+                <button class="btn btn-warning btn-sm me-2" title="Módosítás" (click)="getPizza(pizza.id)"><i
+                        class="bi bi-pencil-fill"></i></button>
+                <button class="btn btn-danger btn-sm" title="Törlés" data-bs-toggle="modal"
+                    (click)="confirmDelete(pizza.id)"><i class="bi bi-trash3-fill"></i></button>
             </td>
         </tr>
     </tbody>
@@ -38,18 +40,20 @@
         </tr>
     </tfoot>
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
+    <nav aria-label="Page navigation example" *ngIf="totalPages > 1" class="mx-3 mb-3">
+        <ul class="pagination" >
             <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
+                <a class="page-link" aria-label="Previous" (click)="setPage(currentPage - 1)"
+                    [class.disabled]="currentPage === 1">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"><a class="page-link" (click)="setPage(i+1)"
+                    [class.active]="currentPage == i+1">{{i+1}}</a></li>
+
             <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
+                <a class="page-link" aria-label="Next" (click)="setPage(currentPage + 1)"
+                    [class.disabled]="currentPage === totalPages">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
@@ -63,16 +67,44 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="formModalLabel"><i class="bi bi-plus-circle-fill"></i> Pizza
+                <h1 class="modal-title fs-5" id="formModalLabel" *ngIf="!editMode"><i
+                        class="bi bi-plus-circle-fill"></i> Pizza
                     hozzáadása</h1>
+                <h1 class="modal-title fs-5" id="formModalLabel" *ngIf="editMode"><i class="bi bi-plus-circle-fill"></i>
+                    Pizza
+                    módosítása</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ...
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="pizza.name" id="name"
+                        placeholder="Pizza megnevezése">
+                    <label for="name">Megnevezés: <sup><em>*</em></sup></label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" [(ngModel)]="pizza.calory" id="calory"
+                        placeholder="Kalória">
+                    <label for="calory">Kalória (kcal): <sup><em>*</em></sup></label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" [(ngModel)]="pizza.price" id="price" placeholder="Ár">
+                    <label for="price">Ár ({{currency}}): <sup><em>*</em></sup></label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="pizza.image" id="image" placeholder="Kép URL">
+                    <label for="image">Kép URL:</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="description" [(ngModel)]="pizza.description"
+                        placeholder="Pizza leírása"></textarea>
+                    <label for="description">Leírás:</label>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Mégsem</button>
-                <button type="button" class="btn btn-primary"><i class="bi bi-floppy-fill"></i> Hozzáadása</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i>
+                    Mégsem</button>
+                <button type="button" class="btn btn-primary" (click)="save()"><i class="bi bi-floppy-fill"></i>
+                    Hozzáadása</button>
             </div>
         </div>
     </div>
@@ -91,7 +123,8 @@
                 Biztonsan törölni szeretnéd ezt a pizzát?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Nem</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i>
+                    Nem</button>
                 <button type="button" class="btn btn-danger"><i class="bi bi-check-lg"></i> Igen</button>
             </div>
         </div>

@@ -5,6 +5,20 @@ const logger = require('../utils/logger');
 var SHA1 = require("crypto-js/sha1");
 const { error } = require('winston');
 const passwdRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, '/uploads')
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, file.fieldname + '-' + uniqueSuffix)
+    }
+  })
+  
+  const upload = multer({ storage: storage })
+
 
 // SELECT ALL records fron :table
 router.get('/:table', (req, res) => {

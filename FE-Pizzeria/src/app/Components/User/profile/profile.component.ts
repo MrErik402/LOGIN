@@ -52,11 +52,10 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    this.userId = loggedUser[0].id;
     this.isLoading = true;
 
     try {
-      const response = await this.api.select('users', this.userId);
+      const response = await this.api.select('users', loggedUser[0].id);
       if (response.status === 500 || !response.data || response.data.length === 0) {
         this.message.show('danger', 'Hiba', response.message ?? 'Nem sikerült betölteni a profilt.');
         return;

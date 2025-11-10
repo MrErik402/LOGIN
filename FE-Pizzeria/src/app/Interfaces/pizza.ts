@@ -1,8 +1,8 @@
 export interface Pizza{
-    id: number,
-    name: string,
-    description: string;
+    id: number;
+    name: string;
+    description?: string;
     calory: number;
-    image: string;
+    image?: string;
     price: number;
 }
