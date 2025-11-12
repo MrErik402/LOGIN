@@ -45,6 +45,37 @@ export class ApiService {
     }
   }
 
+  async upload(formData: FormData):Promise<ApiResponse>{
+    try {
+      const  response = await axios.post(`${this.SERVER}/upload`, formData);
+      return {
+        status: 200,
+        message: 'Fájl feltöltve sikeresen!',
+        data: response.data   
+      };
+    } catch (err) {
+      return {
+        status: 500,
+        message: "Hiba történt a fájl feltöltése során!"
+      };  
+    }
+    
+  }
+
+  async deleteImage(filename: string):Promise<ApiResponse>{
+    try{
+      const response = await axios.delete(`${this.SERVER}/image/${filename}`);
+      return {
+        status: 200,
+        message: 'Fájl törölve sikeresen!'
+      };
+    }catch(error: any){
+      return {
+        status: 500,
+        message: 'Hiba történt a fájl törlése során!'
+      };
+    }
+  }
 
   // GET ALL record from 'table'  -> GET http://localhost:3000/users
 

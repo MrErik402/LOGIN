@@ -6,19 +6,22 @@ var SHA1 = require("crypto-js/sha1");
 const { error } = require('winston');
 const passwdRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, '/uploads')
+    destination: function (_req, _file, cb) {
+        cb(null, './uploads')
     },
-    filename: function (req, file, cb) {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-      cb(null, file.fieldname + '-' + uniqueSuffix)
-    }
-  })
-  
-  const upload = multer({ storage: storage })
+    filename: function (_req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        const ext = path.extname(file.originalname);
+        cb(null, file.fieldname + '-' + uniqueSuffix+ext);
 
+    }
+})
+
+const upload = multer({ storage: storage}) /*A második storage (érték) az a felette definiált változó nevével mindig meg kell egyezni. */
 
 // SELECT ALL records fron :table
 router.get('/:table', (req, res) => {
@@ -46,7 +49,7 @@ router.get('/:table/:field/:op/:value', (req, res) => {
     let op = getOp(req.params.op);
     let value = req.params.value;
 
-    if (req.params.op == 'lk'){
+    if (req.params.op == 'lk') {
         value = `%${value}%`;
     }
 
@@ -57,19 +60,41 @@ router.get('/:table/:field/:op/:value', (req, res) => {
 
 });
 
-// LOGIN
+/* File upload */
+router.post('/upload',upload.single('image'),(req,res)=>{
+    if(!req.file){
+        res.status(400).send({error:'Nincs feltöltött fájl!'});
+        return;
+    }
+    res.status(200).json({message:'Fájl feltöltve sikeresen!',filename:req.file.filename, path: '/uploads/'});
+
+
+});
+
+router.delete('/image/:filename',(req,res)=>{{
+    const filename = req.params.filename;
+    const filepath = path.join(__dirname,'..','uploads',filename);
+    fs.unlink(filepath,(err)=>{
+        if(err){
+            logger.error(`Hiba a fájl törlése során: ${err.message}`);
+            res.status(500).send({error:'Hiba a fájl törlése során!'});
+            return;
+        }
+        return res.status(200).send({message:'Fájl sikeresen törölve!'});
+    });
+}})
 router.post('/:table/login', (req, res) => {
     let { email, password } = req.body;
     let table = req.params.table;
 
-    if (!email || !password){
-        res.status(400).send( { error: 'Hiányzó adatok!' });
+    if (!email || !password) {
+        res.status(400).send({ error: 'Hiányzó adatok!' });
         return;
     }
 
     query(`SELECT * FROM ${table} WHERE email=? AND password=?`, [email, SHA1(password).toString()], (error, results) => {
         if (error) return res.status(500).json({ error: error.message });
-        if (results.length == 0){
+        if (results.length == 0) {
             res.status(400).send({ error: 'Hibás belépési adatok!' });
             return;
         }
@@ -83,25 +108,25 @@ router.post('/:table/registration', (req, res) => {
     let table = req.params.table;
     let { name, email, password, confirm, phone, address } = req.body;
 
-    if (!name || !email || !password || !confirm){
+    if (!name || !email || !password || !confirm) {
         res.status(400).send({ error: 'Hiányzó adatok!' });
         return;
     }
 
-    if ( password != confirm){
+    if (password != confirm) {
         res.status(400).send({ error: 'A megadott jelszavak nem egeznek!' });
         return;
     }
 
-    if (!password.match(passwdRegExp)){
+    if (!password.match(passwdRegExp)) {
         res.status(400).send({ error: 'A megadott jelszó nem elég biztonságos!' });
         return;
     }
 
-    query(`SELECT id FROM ${table} WHERE email=?`, [email], (error, results)=>{
+    query(`SELECT id FROM ${table} WHERE email=?`, [email], (error, results) => {
         if (error) return res.status(500).json({ error: error.message });
 
-        if (results.length != 0){
+        if (results.length != 0) {
             res.status(400).send({ error: 'A megadott e-mail cím már regisztrálva van!' });
             return;
         }
@@ -133,7 +158,7 @@ router.patch('/:table/:id', (req, res) => {
     let fields = Object.keys(req.body);
     let values = Object.values(req.body);
     let updates = [];
-    for(let i=0; i< fields.length; i++){
+    for (let i = 0; i < fields.length; i++) {
         updates.push(`${fields[i]}='${values[i]}'`);
     }
     let str = updates.join(',');
@@ -162,15 +187,23 @@ router.delete('/:table', (req, res) => {
     }, req);
 });
 
-function getOp(op){
-    switch(op){
-        case 'eq':  { op = '='; break; }
-        case 'lt':  { op = '<'; break; }
+/*   ___ ___ ___  _____    ___ _   _  ___  _____   _____  ___   __
+ / __| __/ __|/_/   \  | __(_) (_)/ __|/ __\ \ / /_/ \| \ \ / /
+ \__ \ _| (_ | -< |) | | _|| |_| | (_ | (_ |\ V / -< .` |\ V / 
+ |___/___\___|__<___/  |_|  \___/ \___|\___| \_/|__<_|\_| |_|  
+                                                                  
+                                                                                            
+                                                                                            */
+
+function getOp(op) {
+    switch (op) {
+        case 'eq': { op = '='; break; }
+        case 'lt': { op = '<'; break; }
         case 'lte': { op = '<='; break; }
-        case 'gt':  { op = '>'; break; }
+        case 'gt': { op = '>'; break; }
         case 'gte': { op = '>='; break; }
         case 'not': { op = '<>'; break; }
-        case 'lk':  { op = ' like '; break; }       
+        case 'lk': { op = ' like '; break; }
     }
     return op;
 }

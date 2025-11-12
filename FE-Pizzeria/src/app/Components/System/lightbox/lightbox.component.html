@@ -1,0 +1,6 @@
+<div class="lightbox-container" *ngIf="visible">
+    <div class="lightbox-content">
+        <button class="btn btn-close-white close-btn" (click)="close()">X</button>
+        <img [src]="imageUrl" alt="Preview Image" class="lightbox-image">
+    </div>
+</div>
