@@ -15,20 +15,20 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let user of pagedUsers; let i = index">
+        <tr *ngFor="let user of pagedUsers; let i = index" [ngClass]="{'inactive': !user.status}">
             <td>{{startIndex + i + 1}}</td>
             <td>{{user.name}}</td>
             <td>{{user.email}}</td>
             <td>{{user.address || '-'}}</td>
             <td>{{user.phone || '-'}}</td>
             <td>{{user.role}}</td>
-            <td>{{user.status ? 'Aktív' : 'Inaktív'}}</td>
+            <td>{{user.status ? 'Aktív' : 'Tiltott'}}</td>
             <td>{{user.last || '-'}}</td>
             <td class="text-end">
                 <button class="btn btn-primary btn-sm me-2" title="Részletek" (click)="openUserInfo(user)">
                     <i class="bi bi-info-circle-fill"></i>
                 </button>
-                <button class="btn btn-danger btn-sm" title="Tiltás"><i class="bi bi-ban"></i></button>
+                <button class="btn btn-danger btn-sm" title="Tiltás" *ngIf="user.id != loggedUser.id" (click)="changeStatus(user.id)"><i class="bi bi-ban"></i></button>
             </td>
         </tr>
     </tbody>

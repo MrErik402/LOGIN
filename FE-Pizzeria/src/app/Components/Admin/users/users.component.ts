@@ -6,6 +6,7 @@ import { MessageService } from '../../../services/message.service';
 import { Order, OrderItem } from '../../../interfaces/Order';
 import { NumberFormatPipe } from '../../../pipes/number-format.pipe';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../services/auth.service';
 
 declare var bootstrap: any;
 
@@ -21,13 +22,23 @@ export class UsersComponent implements  OnInit {
     this.userInfoModal = new bootstrap.Modal('#userInfoModal');
     this.orderItemsModal = new bootstrap.Modal('#orderItemsModal');
     this.getUsers();
+    this.loggedUser = this.auth.loggedUser()[0];
   }
   constructor(
     private api: ApiService,
     private message: MessageService,
+    private auth: AuthService,
   ) {}
   
   userList: User[] = [];
+  loggedUser: User = {
+    id: 0,
+    name: '',
+    email: '',
+    password: '',
+    status: true,
+    role: 'user'
+  }
   startIndex: number = 1;
   endIndex: number = 1;
 
@@ -142,5 +153,15 @@ export class UsersComponent implements  OnInit {
     this.orderItemsModal.hide();
     this.selectedOrder = null;
     this.orderItems = [];
+  }
+  changeStatus(userId: number | undefined){
+    if(!userId) return;
+    if(userId === this.loggedUser.id){
+      this.message.show('warning', 'Figyelmeztetés', 'Saját magadat nem tilthatod le!');
+      return;
+    }
+    let idx = this.userList.findIndex(u => u.id === userId);
+    this.userList[idx].status = !this.userList[idx].status;
+    this.api.update('users', userId, this.userList[idx].status ? 1 : 0)
   }
 }

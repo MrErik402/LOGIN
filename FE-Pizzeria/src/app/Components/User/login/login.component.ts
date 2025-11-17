@@ -23,7 +23,8 @@ export class LoginComponent {
     name: '',
     email: '',
     password: '',
-    role: ''
+    role: '',
+    status: true
   }
   rememberMe: boolean = false;
 
