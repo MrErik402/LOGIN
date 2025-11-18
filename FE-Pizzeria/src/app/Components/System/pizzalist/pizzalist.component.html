@@ -1,1 +1,79 @@
-<p>pizzalist works!</p>
+<h3>Pizzák</h3>
+
+<!-- Keresés -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" placeholder="Keresés (név, leírás, kalória, ár)"
+                [(ngModel)]="searchTerm" (input)="onSearchChange()">
+        </div>
+    </div>
+    <div class="col-md-6 text-end">
+        <span class="badge bg-info">Összesen: {{filteredPizzas.length}} pizza</span>
+    </div>
+</div>
+
+<!-- Pizzák kártyák -->
+<div *ngIf="pagedPizzas.length === 0" class="alert alert-info">
+    <i class="bi bi-info-circle"></i> Nincsenek elérhető pizzák.
+</div>
+
+<div class="row g-4" *ngIf="pagedPizzas.length > 0">
+    <div class="col-md-4 col-lg-4" *ngFor="let pizza of pagedPizzas">
+        <div class="card h-100 shadow-sm">
+            <div class="card-img-wrapper" *ngIf="pizza.image">
+                <img [src]="serverUrl + '/uploads/' + pizza.image" 
+                     [alt]="pizza.name" 
+                     class="card-img-top pizza-image"
+                     (click)="openLightBox(pizza.image)">
+            </div>
+            <div class="card-img-wrapper bg-light d-flex align-items-center justify-content-center" *ngIf="!pizza.image" style="height: 200px;">
+                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{pizza.name}}</h5>
+                <p class="card-text text-muted small flex-grow-1" *ngIf="pizza.description">
+                    {{pizza.description}}
+                </p>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-secondary">
+                        <i class="bi bi-fire"></i> {{pizza.calory | numberFormat}} kcal
+                    </span>
+                    <span class="text-success fw-bold fs-5">
+                        {{pizza.price | numberFormat}} {{currency}}
+                    </span>
+                </div>
+                <button class="btn btn-primary w-100" (click)="addToCart(pizza)">
+                    <i class="bi bi-cart-plus"></i> Kosárba
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pagináció -->
+<nav aria-label="Page navigation" *ngIf="totalPages > 1" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a class="page-link" aria-label="Previous" (click)="setPage(currentPage - 1)"
+                [class.disabled]="currentPage === 1">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index">
+            <a class="page-link" (click)="setPage(i+1)" [class.active]="currentPage == i+1">{{i+1}}</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" aria-label="Next" (click)="setPage(currentPage + 1)"
+                [class.disabled]="currentPage === totalPages">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+    <div class="text-center text-muted small mt-2">
+        Összesen <strong>{{startIndex + 1}}-{{endIndex}}/{{filteredPizzas.length}}</strong> pizza
+    </div>
+</nav>
+
+<app-lightbox [imageUrl]="lightboxImageUrl" [visible]="lightboxVisible" (previewClosed)="lightboxVisible = false"></app-lightbox>

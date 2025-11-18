@@ -5,6 +5,7 @@ import { ApiService } from '../../../services/api.service';
 import { MessageService } from '../../../services/message.service';
 import { Order, OrderItem } from '../../../Interfaces/Order';
 import { NumberFormatPipe } from '../../../pipes/number-format.pipe';
+import { DateFormatPipe } from '../../../pipes/date-format.pipe';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../services/auth.service';
 
@@ -13,7 +14,7 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, NumberFormatPipe],
+  imports: [CommonModule, NumberFormatPipe, DateFormatPipe],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
 })

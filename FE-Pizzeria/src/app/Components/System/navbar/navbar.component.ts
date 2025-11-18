@@ -1,8 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { NavItem } from '../../../interfaces/navItem';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+
+export interface CartItem {
+  pizza: any;
+  quantity: number;
+}
 
 @Component({
   selector: 'app-navbar',
@@ -15,12 +20,16 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './navbar.component.scss'
 })
 
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   @Input() title = '';
 
   isLoggedIn = false;
   isAdmin = false
   loggedUserName = '';
+  cartItemCount: number = 0;
+
+  private readonly CART_STORAGE_KEY = 'pizzeria_cart';
+  private cartCheckInterval: any;
 
   constructor(
     private auth: AuthService
@@ -29,14 +38,62 @@ export class NavbarComponent implements OnInit {
   navItems:NavItem[] = [];
 
   ngOnInit(): void {
+    this.updateCartCount();
     this.auth.isLoggedIn$.subscribe(res => {
       this.isLoggedIn = res;
-      this.isAdmin=this.auth.isAdmin()
+      this.isAdmin = this.auth.isAdmin()
       if (this.isLoggedIn){
         this.loggedUserName = this.auth.loggedUser()[0].name;
+        this.updateCartCount();
       }
       this.setupMenu(res);
     });
+
+    // Ellenőrizzük a kosár tartalmát rendszeresen
+    this.cartCheckInterval = setInterval(() => {
+      if (this.isLoggedIn) {
+        this.updateCartCount();
+        this.updateCartBadge();
+      }
+    }, 1000); // Másodpercenként ellenőrzés
+
+    // Event listener a localStorage változásaira (ha másik tab-ban változik)
+    window.addEventListener('storage', (e) => {
+      if (e.key === this.CART_STORAGE_KEY) {
+        this.updateCartCount();
+        this.updateCartBadge();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.cartCheckInterval) {
+      clearInterval(this.cartCheckInterval);
+    }
+  }
+
+  updateCartCount(): void {
+    const cartData = localStorage.getItem(this.CART_STORAGE_KEY);
+    if (cartData) {
+      try {
+        const cartItems: CartItem[] = JSON.parse(cartData);
+        this.cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+      } catch (e) {
+        this.cartItemCount = 0;
+      }
+    } else {
+      this.cartItemCount = 0;
+    }
+  }
+
+  updateCartBadge(): void {
+    const cartItem = this.navItems.find(item => item.url === 'cart');
+    if (cartItem) {
+      cartItem.badge = this.cartItemCount > 0 ? this.cartItemCount : undefined;
+    } else if (this.isLoggedIn) {
+      // Ha még nincs a menüben, újra beállítjuk
+      this.setupMenu(this.isLoggedIn);
+    }
   }
 
   setupMenu(isLoggedIn: boolean){
@@ -52,7 +109,7 @@ export class NavbarComponent implements OnInit {
           name: 'Kosár',
           url: 'cart',
           icon: 'bi-cart',
-          badge: 10
+          badge: this.cartItemCount > 0 ? this.cartItemCount : undefined
         },
         ...(this.isAdmin) ? [
           {
@@ -107,5 +164,4 @@ export class NavbarComponent implements OnInit {
 
     ]
   }
-
 }

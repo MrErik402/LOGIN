@@ -1,1 +1,83 @@
-<p>cart works!</p>
+<h3>Kosár</h3>
+
+<div *ngIf="cartItems.length === 0" class="alert alert-info">
+    <i class="bi bi-cart-x"></i> A kosár üres. Válassz pizzákat a rendeléshez!
+</div>
+
+<div *ngIf="cartItems.length > 0">
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Kép</th>
+                    <th>Pizza</th>
+                    <th class="text-end">Egységár</th>
+                    <th class="text-center">Mennyiség</th>
+                    <th class="text-end">Összeg</th>
+                    <th class="text-end">Műveletek</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of cartItems; let i = index">
+                    <td>
+                        <img *ngIf="item.pizza.image" [src]="serverUrl + '/uploads/' + item.pizza.image" 
+                            [alt]="item.pizza.name" class="cart-image">
+                        <span *ngIf="!item.pizza.image" class="text-muted">Nincs kép</span>
+                    </td>
+                    <td>
+                        <strong>{{item.pizza.name}}</strong>
+                        <div *ngIf="item.pizza.description" class="small text-muted">
+                            {{item.pizza.description}}
+                        </div>
+                        <div class="small text-muted">
+                            {{item.pizza.calory | numberFormat}} kcal
+                        </div>
+                    </td>
+                    <td class="text-end">{{item.pizza.price | numberFormat}} {{currency}}</td>
+                    <td class="text-center">
+                        <div class="input-group input-group-sm" style="max-width: 120px; margin: 0 auto;">
+                            <button class="btn btn-outline-secondary" type="button" 
+                                (click)="updateQuantity(i, item.quantity - 1)">-</button>
+                            <input type="number" class="form-control text-center" 
+                                [(ngModel)]="item.quantity" 
+                                (change)="updateQuantity(i, item.quantity)"
+                                min="1" max="99">
+                            <button class="btn btn-outline-secondary" type="button" 
+                                (click)="updateQuantity(i, item.quantity + 1)">+</button>
+                        </div>
+                    </td>
+                    <td class="text-end">
+                        <strong>{{(item.pizza.price * item.quantity) | numberFormat}} {{currency}}</strong>
+                    </td>
+                    <td class="text-end">
+                        <button class="btn btn-danger btn-sm" title="Eltávolítás" (click)="removeItem(i)">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="text-end"><strong>Összesen:</strong></td>
+                    <td class="text-end">
+                        <strong class="text-success fs-5">{{getTotal() | numberFormat}} {{currency}}</strong>
+                    </td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <button class="btn btn-outline-danger" (click)="clearCart()">
+                <i class="bi bi-trash3"></i> Kosár ürítése
+            </button>
+        </div>
+        <div class="col-md-6 text-end">
+            <button class="btn btn-success btn-lg" (click)="placeOrder()">
+                <i class="bi bi-check-circle"></i> Rendelés leadása
+            </button>
+        </div>
+    </div>
+</div>
