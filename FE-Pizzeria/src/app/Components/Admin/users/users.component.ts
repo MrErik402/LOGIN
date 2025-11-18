@@ -3,7 +3,7 @@ import { User } from '../../../interfaces/user';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../../services/api.service';
 import { MessageService } from '../../../services/message.service';
-import { Order, OrderItem } from '../../../interfaces/Order';
+import { Order, OrderItem } from '../../../Interfaces/Order';
 import { NumberFormatPipe } from '../../../pipes/number-format.pipe';
 import { environment } from '../../../../environments/environment';
 
