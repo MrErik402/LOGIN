@@ -20,6 +20,7 @@ export class RegistrationComponent {
       email: '',
       password: '',
       confirm: '',
+      status: true,
       role: 'user'
   }
 

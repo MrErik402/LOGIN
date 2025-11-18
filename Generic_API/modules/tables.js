@@ -98,6 +98,10 @@ router.post('/:table/login', (req, res) => {
             res.status(400).send({ error: 'Hibás belépési adatok!' });
             return;
         }
+        if (!results[0].status) {
+            res.status(400).send({ error: 'A felhasználó le van tiltva!' });
+            return;
+        }
         res.status(200).json(results);
     }, req);
 

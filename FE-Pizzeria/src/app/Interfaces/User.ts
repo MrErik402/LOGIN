@@ -1,5 +1,5 @@
 export interface User {
-  id?: number;
+  id?: number | undefined;
   name: string;
   email: string;
   password: string;
@@ -9,5 +9,5 @@ export interface User {
   role: string;
   reg?: string;
   last?: string;
-  status?: boolean;
+  status: boolean;
 }
