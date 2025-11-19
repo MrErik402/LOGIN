@@ -98,7 +98,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-md-3"><strong>Státusz:</strong></div>
-                        <div class="col-md-9">{{selectedUser.status ? 'Aktív' : 'Inaktív'}}</div>
+                        <div class="col-md-9">{{selectedUser.status ? 'Aktív' : 'Tiltott'}}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-md-3"><strong>Regisztráció:</strong></div>
@@ -114,7 +114,7 @@
 
                 <div class="mt-4">
                     <h5 class="mb-3">Rendelések</h5>
-                    <div *ngIf="userOrders.length === 0" class="alert alert-info">
+                    <div *ngIf="userOrders.length === 0" class="alert alert-warning">
                         A felhasználónak nincsenek rendelései.
                     </div>
                     <div *ngIf="userOrders.length > 0">
