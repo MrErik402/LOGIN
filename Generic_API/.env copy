@@ -5,4 +5,10 @@ DBNAME= 2025_katicabufe
 
 PORT = 3000
 
+SMTP_TOKEN = dca058f5107f55fc655643e07abd1dfc
+SMTP_HOST = sandbox.smtp.mailtrap.io
+SMTP_PORT = 2525
+SMTP_USER = e35e0c2f7821a1
+SMTP_PASS = 6ae4728b8bb9ba
+ADMIN_EMAIL = admin@ateceged.hu
 DEBUG_MODE=1

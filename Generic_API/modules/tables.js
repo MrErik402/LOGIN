@@ -8,6 +8,18 @@ const passwdRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const nodemailer = require('nodemailer');
+const ejs = require('ejs');
+
+
+var transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+    }
+});
 
 const storage = multer.diskStorage({
     destination: function (_req, _file, cb) {
@@ -16,12 +28,12 @@ const storage = multer.diskStorage({
     filename: function (_req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
         const ext = path.extname(file.originalname);
-        cb(null, file.fieldname + '-' + uniqueSuffix+ext);
+        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
 
     }
 })
 
-const upload = multer({ storage: storage}) /*A második storage (érték) az a felette definiált változó nevével mindig meg kell egyezni. */
+const upload = multer({ storage: storage }) /*A második storage (érték) az a felette definiált változó nevével mindig meg kell egyezni. */
 
 // SELECT ALL records fron :table
 router.get('/:table', (req, res) => {
@@ -60,29 +72,58 @@ router.get('/:table/:field/:op/:value', (req, res) => {
 
 });
 
-/* File upload */
-router.post('/upload',upload.single('image'),(req,res)=>{
-    if(!req.file){
-        res.status(400).send({error:'Nincs feltöltött fájl!'});
+//SENDING EMAIL
+router.post('/send-email', async (req, res) => {
+    const { template ,to, subject, data} = req.body;
+    if (!to || !subject) {
+        res.status(400).send({ error: 'Hiányzó adatok az email küldéséhez!' });
         return;
     }
-    res.status(200).json({message:'Fájl feltöltve sikeresen!',filename:req.file.filename, path: '/uploads/'});
+    if(!template){
+        res.status(400).send({ error: 'Hiányzó sablon az email küldéséhez!' });
+        return;
+    }
+    try{
+        await transporter.sendMail({
+            from: process.env.ADMIN_EMAIL,
+            to: to,
+            subject: subject,
+            html: await renderTemplate(template, data || {})
+        })
+        res.status(200).send({ message: 'Email sikeresen elküldve!'});
+    }catch(err){
+        logger.error(`Hiba az email küldése során: ${err.message}`);
+        res.status(500).send({ error: 'Hiba az email küldése során!' });
+        return;
+    }
+    
+});
+
+/* File upload */
+router.post('/upload', upload.single('image'), (req, res) => {
+    if (!req.file) {
+        res.status(400).send({ error: 'Nincs feltöltött fájl!' });
+        return;
+    }
+    res.status(200).json({ message: 'Fájl feltöltve sikeresen!', filename: req.file.filename, path: '/uploads/' });
 
 
 });
 
-router.delete('/image/:filename',(req,res)=>{{
-    const filename = req.params.filename;
-    const filepath = path.join(__dirname,'..','uploads',filename);
-    fs.unlink(filepath,(err)=>{
-        if(err){
-            logger.error(`Hiba a fájl törlése során: ${err.message}`);
-            res.status(500).send({error:'Hiba a fájl törlése során!'});
-            return;
-        }
-        return res.status(200).send({message:'Fájl sikeresen törölve!'});
-    });
-}})
+router.delete('/image/:filename', (req, res) => {
+    {
+        const filename = req.params.filename;
+        const filepath = path.join(__dirname, '..', 'uploads', filename);
+        fs.unlink(filepath, (err) => {
+            if (err) {
+                logger.error(`Hiba a fájl törlése során: ${err.message}`);
+                res.status(500).send({ error: 'Hiba a fájl törlése során!' });
+                return;
+            }
+            return res.status(200).send({ message: 'Fájl sikeresen törölve!' });
+        });
+    }
+})
 router.post('/:table/login', (req, res) => {
     let { email, password } = req.body;
     let table = req.params.table;
@@ -210,6 +251,11 @@ function getOp(op) {
         case 'lk': { op = ' like '; break; }
     }
     return op;
+}
+
+async function renderTemplate(templateName, data) {
+    const tempFile = path.join(__dirname, '..', 'templates', `${templateName}.ejs`);
+    return await ejs.renderFile(tempFile, data);
 }
 
 module.exports = router;

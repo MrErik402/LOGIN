@@ -1,5 +1,5 @@
 @host = http://localhost
-@port = 3333
+@port = 3000
 @url = {{host}}:{{port}}
 
 ### GET all records from :table
@@ -71,3 +71,18 @@ Content-Type: application/json
 
 GET {{url}}/users/id/lte/3
 Content-Type: application/json
+
+
+### SEND EMAIL
+
+POST {{url}}/send-email
+Content-Type: application/json
+
+{
+    "template": "registration",
+    "to": "bujakierikattila@turr.hu",
+    "subject": "Köszönjük a regisztrációdat!",
+    "data":{
+        "name": "Sándor"
+    }
+}
