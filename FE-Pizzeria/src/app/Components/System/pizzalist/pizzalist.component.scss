@@ -1,0 +1,39 @@
+.pizza-image {
+  height: 200px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.pizza-image:hover {
+  transform: scale(1.05);
+}
+
+.card-img-wrapper {
+  overflow: hidden;
+  height: 200px;
+}
+
+.card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-body {
+  min-height: 200px;
+}
+
+.card-title {
+  color: #333;
+  font-weight: 600;
+}
+
+.card-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+

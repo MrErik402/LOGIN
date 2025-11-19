@@ -135,7 +135,7 @@
                                     <td>{{order.id}}</td>
                                     <td>{{order.total | numberFormat}} {{currency}}</td>
                                     <td>{{order.status || '-'}}</td>
-                                    <td>{{order.created_at || '-'}}</td>
+                                    <td>{{order.created_at | dateFormat:'short'}}</td>
                                     <td class="text-end">
                                         <button class="btn btn-info btn-sm" title="Rendelés tételek" (click)="openOrderItems(order)">
                                             <i class="bi bi-info-circle-fill"></i>
@@ -196,7 +196,7 @@
                     <p><strong>Rendelés ID:</strong> {{selectedOrder.id}}</p>
                     <p><strong>Összeg:</strong> {{selectedOrder.total | numberFormat}} {{currency}}</p>
                     <p><strong>Státusz:</strong> {{selectedOrder.status || '-'}}</p>
-                    <p><strong>Dátum:</strong> {{selectedOrder.created_at || '-'}}</p>
+                    <p><strong>Dátum:</strong> {{selectedOrder.created_at | dateFormat:'short'}}</p>
                 </div>
 
                 <hr>

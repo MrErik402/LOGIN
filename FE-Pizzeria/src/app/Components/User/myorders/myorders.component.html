@@ -1,1 +1,150 @@
-<p>myorders works!</p>
+<h3>Rendeléseim</h3>
+
+<div *ngIf="orderList.length === 0" class="alert alert-info">
+    <i class="bi bi-inbox"></i> Még nincsenek rendeléseid. <a routerLink="/pizzalist" class="alert-link">Nézd meg a pizzákat!</a>
+</div>
+
+<div *ngIf="orderList.length > 0">
+    <div class="mb-3">
+        <span class="badge bg-info">Összesen: {{orderList.length}} rendelés</span>
+    </div>
+
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Rendelés ID</th>
+                <th class="text-end">Összeg</th>
+                <th>Státusz</th>
+                <th>Dátum</th>
+                <th class="text-end">Műveletek</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let order of pagedOrders; let i = index">
+                <td>{{startIndex + i + 1}}</td>
+                <td><strong>#{{order.id}}</strong></td>
+                <td class="text-end"><strong>{{order.total | numberFormat}} {{currency}}</strong></td>
+                <td>
+                    <span class="badge" [ngClass]="getStatusBadgeClass(order.status)">
+                        {{getStatusText(order.status)}}
+                    </span>
+                </td>
+                <td>{{order.created_at | dateFormat:'short'}}</td>
+                <td class="text-end">
+                    <button class="btn btn-info btn-sm" title="Rendelés tételek" (click)="openOrderItems(order)">
+                        <i class="bi bi-info-circle-fill"></i> Részletek
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="text-center" colspan="6">Összesen <strong class="text-info">{{startIndex + 1}}-{{endIndex}}/{{orderList.length}}</strong> rendelés található!
+                </td>
+            </tr>
+        </tfoot>
+
+        <nav aria-label="Page navigation example" *ngIf="totalPages > 1" class="mx-3 mb-3">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" aria-label="Previous" (click)="setPage(currentPage - 1)"
+                        [class.disabled]="currentPage === 1">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index">
+                    <a class="page-link" (click)="setPage(i+1)" [class.active]="currentPage == i+1">{{i+1}}</a>
+                </li>
+
+                <li class="page-item">
+                    <a class="page-link" aria-label="Next" (click)="setPage(currentPage + 1)"
+                        [class.disabled]="currentPage === totalPages">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </table>
+</div>
+
+<!-- Order Items Modal -->
+<div class="modal fade" id="orderItemsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="orderItemsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="orderItemsModalLabel">
+                    <i class="bi bi-cart-check"></i> Rendelés tételek
+                </h1>
+                <button type="button" class="btn-close" (click)="closeOrderItemsModal()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div *ngIf="selectedOrder" class="mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Rendelés ID:</strong> #{{selectedOrder.id}}</p>
+                            <p><strong>Státusz:</strong> 
+                                <span class="badge" [ngClass]="getStatusBadgeClass(selectedOrder.status)">
+                                    {{getStatusText(selectedOrder.status)}}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Összeg:</strong> {{selectedOrder.total | numberFormat}} {{currency}}</p>
+                            <p><strong>Dátum:</strong> {{selectedOrder.created_at | dateFormat:'short'}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div *ngIf="orderItems.length === 0" class="alert alert-info">
+                    A rendelésnek nincsenek tételei.
+                </div>
+                <div *ngIf="orderItems.length > 0">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Pizza</th>
+                                <th class="text-end">Mennyiség</th>
+                                <th class="text-end">Egységár</th>
+                                <th class="text-end">Összeg</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of orderItems; let i = index">
+                                <td>{{i + 1}}</td>
+                                <td>
+                                    <div *ngIf="item.pizza">
+                                        <strong>{{item.pizza.name}}</strong>
+                                    </div>
+                                    <div *ngIf="!item.pizza">
+                                        Pizza ID: {{item.pizza_id}}
+                                    </div>
+                                </td>
+                                <td class="text-end">{{item.quantity}}</td>
+                                <td class="text-end">{{item.price | numberFormat}} {{currency}}</td>
+                                <td class="text-end">{{(item.price || 0) * item.quantity | numberFormat}} {{currency}}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Összesen:</strong></td>
+                                <td class="text-end">
+                                    <strong>{{selectedOrder?.total | numberFormat}} {{currency}}</strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeOrderItemsModal()">
+                    <i class="bi bi-x-circle"></i> Bezárás
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

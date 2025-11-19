@@ -1,1 +1,161 @@
-<p>stats works!</p>
+<h3>Statisztikák</h3>
+
+<div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Betöltés...</span>
+    </div>
+    <p class="mt-2">Adatok betöltése...</p>
+</div>
+
+<div *ngIf="!loading">
+    <!-- Fő statisztikák kártyák -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-receipt-cutoff fs-1 text-primary"></i>
+                    <h4 class="mt-2">{{totalOrders | numberFormat}}</h4>
+                    <p class="text-muted mb-0">Összes rendelés</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-currency-exchange fs-1 text-success"></i>
+                    <h4 class="mt-2">{{totalRevenue | numberFormat}} {{currency}}</h4>
+                    <p class="text-muted mb-0">Összes bevétel</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-people fs-1 text-info"></i>
+                    <h4 class="mt-2">{{totalUsers | numberFormat}}</h4>
+                    <p class="text-muted mb-0">Felhasználók</p>
+                    <small class="text-success">{{activeUsers}} aktív</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-pizza fs-1 text-warning"></i>
+                    <h4 class="mt-2">{{totalPizzas | numberFormat}}</h4>
+                    <p class="text-muted mb-0">Pizzák</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Részletes statisztikák -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Rendelés statisztikák</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Függőben:</span>
+                        <strong class="text-warning">{{pendingOrders}}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Kész:</span>
+                        <strong class="text-success">{{completedOrders}}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Törölve:</span>
+                        <strong class="text-danger">{{cancelledOrders}}</strong>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span>Átlagos rendelés érték:</span>
+                        <strong>{{averageOrderValue | numberFormat:2}} {{currency}}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Időszak statisztikák</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Ma</h6>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Rendelések:</span>
+                        <strong>{{todayOrders}}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Bevétel:</span>
+                        <strong>{{todayRevenue | numberFormat}} {{currency}}</strong>
+                    </div>
+                    <hr>
+                    <h6>Ez a hónap</h6>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Rendelések:</span>
+                        <strong>{{thisMonthOrders}}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Bevétel:</span>
+                        <strong>{{thisMonthRevenue | numberFormat}} {{currency}}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top statisztikák -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-trophy"></i> Top 5 Pizza</h5>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="topPizzas.length === 0" class="text-muted">
+                        Még nincsenek rendelések.
+                    </div>
+                    <div *ngFor="let item of topPizzas; let i = index" class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                        <div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-warning text-dark me-2">#{{i + 1}}</span>
+                                <strong>{{item.pizza.name}}</strong>
+                            </div>
+                            <small class="text-muted">Eladott mennyiség: {{item.quantity}} db</small>
+                        </div>
+                        <div class="text-end">
+                            <strong class="text-success">{{item.revenue | numberFormat}} {{currency}}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-star"></i> Top 5 Vásárló</h5>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="topUsers.length === 0" class="text-muted">
+                        Még nincsenek rendelések.
+                    </div>
+                    <div *ngFor="let item of topUsers; let i = index" class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                        <div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-info me-2">#{{i + 1}}</span>
+                                <strong>{{item.user.name}}</strong>
+                            </div>
+                            <small class="text-muted">Rendelések: {{item.orderCount}} db</small>
+                        </div>
+                        <div class="text-end">
+                            <strong class="text-success">{{item.totalSpent | numberFormat}} {{currency}}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
